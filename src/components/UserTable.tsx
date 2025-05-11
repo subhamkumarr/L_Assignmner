@@ -16,6 +16,7 @@ import {
   IconButton,
   Tooltip,
   Avatar,
+  useMediaQuery,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import BusinessIcon from '@mui/icons-material/Business';
@@ -33,6 +34,7 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [searchTerm, setSearchTerm] = useState('');
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSort = (field: SortField) => {
     if (field === sortField) {
@@ -104,158 +106,191 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
           ),
         }}
       />
-      <TableContainer
-        component={Paper}
-        sx={{
-          borderRadius: 2,
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
-          overflow: 'hidden',
-        }}
-      >
-        <Table>
-          <TableHead>
-            <TableRow sx={{ 
-              backgroundColor: '#F8FAFC',
-              borderBottom: '2px solid #E2E8F0',
-            }}>
-              <TableCell>
-                <TableSortLabel
-                  active={sortField === 'name'}
-                  direction={sortField === 'name' ? sortOrder : 'asc'}
-                  onClick={() => handleSort('name')}
-                  sx={{ 
-                    color: '#475569',
-                    fontWeight: 600,
-                    '&:hover': {
-                      color: theme.palette.primary.main,
-                    },
-                  }}
-                >
-                  Name
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={sortField === 'email'}
-                  direction={sortField === 'email' ? sortOrder : 'asc'}
-                  onClick={() => handleSort('email')}
-                  sx={{ 
-                    color: '#475569',
-                    fontWeight: 600,
-                    '&:hover': {
-                      color: theme.palette.primary.main,
-                    },
-                  }}
-                >
-                  Email
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={sortField === 'company.name'}
-                  direction={sortField === 'company.name' ? sortOrder : 'asc'}
-                  onClick={() => handleSort('company.name')}
-                  sx={{ 
-                    color: '#475569',
-                    fontWeight: 600,
-                    '&:hover': {
-                      color: theme.palette.primary.main,
-                    },
-                  }}
-                >
-                  Company Name
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sx={{ color: '#475569', fontWeight: 600 }}>Phone</TableCell>
-              <TableCell sx={{ color: '#475569', fontWeight: 600 }}>Website</TableCell>
-              <TableCell sx={{ color: '#475569', fontWeight: 600 }}>Address</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredAndSortedUsers.map((user) => (
-              <TableRow
-                key={user.id}
-                sx={{
-                  '&:nth-of-type(odd)': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.02)',
-                  },
-                  '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                  },
-                }}
-              >
-                <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Avatar
-                      sx={{
-                        bgcolor: getAvatarColor(user.name),
-                        width: 40,
-                        height: 40,
-                        fontSize: '1rem',
-                        fontWeight: 600,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      }}
-                    >
-                      {user.name.split(' ').map(n => n[0]).join('')}
-                    </Avatar>
-                    <Box>
-                      <Box sx={{ fontWeight: 600, color: '#1E293B' }}>
-                        {user.name}
-                      </Box>
-                      <Box sx={{ fontSize: '0.875rem', color: '#64748B' }}>
-                        @{user.username}
-                      </Box>
-                    </Box>
-                  </Box>
-                </TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <Chip
-                    icon={<BusinessIcon />}
-                    label={user.company.name}
-                    sx={{
-                      backgroundColor: '#E3F2FD',
-                      color: '#1976D2',
+      <Box sx={{ 
+        width: '100%', 
+        overflowX: 'auto',
+        '&::-webkit-scrollbar': {
+          height: '8px',
+        },
+        '&::-webkit-scrollbar-track': {
+          background: '#f1f1f1',
+          borderRadius: '4px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          background: '#888',
+          borderRadius: '4px',
+          '&:hover': {
+            background: '#555',
+          },
+        },
+      }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            borderRadius: 2,
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
+            minWidth: isMobile ? 650 : '100%',
+          }}
+        >
+          <Table>
+            <TableHead>
+              <TableRow sx={{ 
+                backgroundColor: '#F8FAFC',
+                borderBottom: '2px solid #E2E8F0',
+              }}>
+                <TableCell sx={{ minWidth: isMobile ? 200 : 150 }}>
+                  <TableSortLabel
+                    active={sortField === 'name'}
+                    direction={sortField === 'name' ? sortOrder : 'asc'}
+                    onClick={() => handleSort('name')}
+                    sx={{ 
+                      color: '#475569',
                       fontWeight: 600,
-                      '& .MuiChip-icon': {
-                        color: '#1976D2',
-                      },
                       '&:hover': {
-                        backgroundColor: '#BBDEFB',
+                        color: theme.palette.primary.main,
                       },
                     }}
-                  />
+                  >
+                    Name
+                  </TableSortLabel>
                 </TableCell>
-                <TableCell>{user.phone}</TableCell>
-                <TableCell>
-                  <Tooltip title="Visit website">
-                    <IconButton
-                      size="small"
-                      href={`https://${user.website}`}
-                      target="_blank"
-                      sx={{ 
+                <TableCell sx={{ minWidth: isMobile ? 200 : 150 }}>
+                  <TableSortLabel
+                    active={sortField === 'email'}
+                    direction={sortField === 'email' ? sortOrder : 'asc'}
+                    onClick={() => handleSort('email')}
+                    sx={{ 
+                      color: '#475569',
+                      fontWeight: 600,
+                      '&:hover': {
                         color: theme.palette.primary.main,
+                      },
+                    }}
+                  >
+                    Email
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ minWidth: isMobile ? 200 : 150 }}>
+                  <TableSortLabel
+                    active={sortField === 'company.name'}
+                    direction={sortField === 'company.name' ? sortOrder : 'asc'}
+                    onClick={() => handleSort('company.name')}
+                    sx={{ 
+                      color: '#475569',
+                      fontWeight: 600,
+                      '&:hover': {
+                        color: theme.palette.primary.main,
+                      },
+                    }}
+                  >
+                    Company Name
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ minWidth: isMobile ? 150 : 120, color: '#475569', fontWeight: 600 }}>Phone</TableCell>
+                <TableCell sx={{ minWidth: isMobile ? 150 : 120, color: '#475569', fontWeight: 600 }}>Website</TableCell>
+                <TableCell sx={{ minWidth: isMobile ? 250 : 200, color: '#475569', fontWeight: 600 }}>Address</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredAndSortedUsers.map((user) => (
+                <TableRow
+                  key={user.id}
+                  sx={{
+                    '&:nth-of-type(odd)': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                    },
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    },
+                  }}
+                >
+                  <TableCell>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Avatar
+                        sx={{
+                          bgcolor: getAvatarColor(user.name),
+                          width: isMobile ? 48 : 40,
+                          height: isMobile ? 48 : 40,
+                          fontSize: isMobile ? '1.2rem' : '1rem',
+                          fontWeight: 600,
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        }}
+                      >
+                        {user.name.split(' ').map(n => n[0]).join('')}
+                      </Avatar>
+                      <Box>
+                        <Box sx={{ 
+                          fontWeight: 600, 
+                          color: '#1E293B',
+                          fontSize: isMobile ? '1rem' : '0.875rem',
+                        }}>
+                          {user.name}
+                        </Box>
+                        <Box sx={{ 
+                          fontSize: isMobile ? '0.875rem' : '0.75rem', 
+                          color: '#64748B' 
+                        }}>
+                          @{user.username}
+                        </Box>
+                      </Box>
+                    </Box>
+                  </TableCell>
+                  <TableCell sx={{ fontSize: isMobile ? '1rem' : '0.875rem' }}>{user.email}</TableCell>
+                  <TableCell>
+                    <Chip
+                      icon={<BusinessIcon />}
+                      label={user.company.name}
+                      sx={{
+                        backgroundColor: '#E3F2FD',
+                        color: '#1976D2',
+                        fontWeight: 600,
+                        fontSize: isMobile ? '0.875rem' : '0.75rem',
+                        '& .MuiChip-icon': {
+                          color: '#1976D2',
+                        },
                         '&:hover': {
-                          backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                          backgroundColor: '#BBDEFB',
                         },
                       }}
-                    >
-                      {user.website}
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
-                <TableCell>
-                  <Tooltip title="Full address">
-                    <Box sx={{ maxWidth: 300 }}>
-                      {`${user.address.street}, ${user.address.suite}, ${user.address.city}, ${user.address.zipcode}`}
-                    </Box>
-                  </Tooltip>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                    />
+                  </TableCell>
+                  <TableCell sx={{ fontSize: isMobile ? '1rem' : '0.875rem' }}>{user.phone}</TableCell>
+                  <TableCell>
+                    <Tooltip title="Visit website">
+                      <IconButton
+                        size="small"
+                        href={`https://${user.website}`}
+                        target="_blank"
+                        sx={{ 
+                          color: theme.palette.primary.main,
+                          fontSize: isMobile ? '1rem' : '0.875rem',
+                          '&:hover': {
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                          },
+                        }}
+                      >
+                        {user.website}
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell>
+                    <Tooltip title="Full address">
+                      <Box sx={{ 
+                        maxWidth: 300,
+                        fontSize: isMobile ? '1rem' : '0.875rem',
+                        whiteSpace: 'normal',
+                        wordBreak: 'break-word',
+                      }}>
+                        {`${user.address.street}, ${user.address.suite}, ${user.address.city}, ${user.address.zipcode}`}
+                      </Box>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
     </Box>
   );
 };
